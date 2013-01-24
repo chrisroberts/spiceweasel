@@ -5,6 +5,8 @@ module Spiceweasel
     attr_reader :delete
     attr_reader :cookbook_list
 
+    include CommandHelper
+
     def initialize(berkshelf=nil)
       @create = []
       @delete = []
@@ -29,11 +31,11 @@ module Spiceweasel
         else
           resolve_opts = {}
         end
-        @create << "berks upload #{berks_options.join(' ')}"
+        create_command("berks upload #{berks_options.join(' ')}")
         Berkshelf.ui.mute do
           berks.resolve(resolve_opts).each do |cb|
             @cookbook_list[cb.cookbook_name] = cb.version
-            @delete << "knife cookbook#{Spiceweasel::Config[:knife_options]} delete #{cb.cookbook_name} #{cb.version} -a -y"
+            delete_command("knife cookbook#{Spiceweasel::Config[:knife_options]} delete #{cb.cookbook_name} #{cb.version} -a -y")
           end
         end
       end
