@@ -22,6 +22,8 @@ require 'chef'
 module Spiceweasel
   class Roles
 
+    include CommandHelper
+
     attr_reader :role_list, :create, :delete
 
     def initialize(roles = {}, environments = [], cookbooks = {})
@@ -40,11 +42,11 @@ module Spiceweasel
             exit(-1)
           end
           if File.exists?("roles/#{role}.json")
-            @create.push("knife role#{Spiceweasel::Config[:knife_options]} from file #{role}.json")
+            create_command("knife role#{Spiceweasel::Config[:knife_options]} from file #{role}.json")
           else #assume no .json means they want .rb and catchall for misssing dir
-            @create.push("knife role#{Spiceweasel::Config[:knife_options]} from file #{role}.rb")
+            create_command("knife role#{Spiceweasel::Config[:knife_options]} from file #{role}.rb")
           end
-          @delete.push("knife role#{Spiceweasel::Config[:knife_options]} delete #{role} -y")
+          delete_command("knife role#{Spiceweasel::Config[:knife_options]} delete #{role} -y")
           @role_list.push(role)
         end
       end
