@@ -27,7 +27,7 @@ module Spiceweasel
       objects = {'cookbooks' => nil, 'roles' => nil, 'environments' => nil, 'data bags' => nil, 'nodes' => nil}
 
       # COOKBOOKS
-      cookbooks = self.order_cookbooks_by_dependency
+      cookbooks = self.resolve_cookbooks
       objects['cookbooks'] = cookbooks unless cookbooks.empty?
 
       # ROLES
@@ -81,23 +81,24 @@ module Spiceweasel
       name.join('.')
     end
 
-    def self.order_cookbooks_by_dependency
+    def self.resolve_cookbooks
       loader = Chef::CookbookLoader.new('./cookbooks')
       books = loader.cookbooks_by_name
-      g_hash = Mash.new
+      graph = Solve::Graph.new
       books.each do |name, cb|
         Spiceweasel::Log.debug("dir_ext: #{name} #{cb.version}")
-        g_hash[name] = [cb]
+        artifact = graph.artifact(name, cb.version)
+        cb.metadata.dependencies.each do |dep_name, dep_version|
+          artifact.depends(dep_name, dep_version)
+        end
       end
-      graph = Chef::CookbookVersionSelector.create_dependency_graph_from_cookbooks(g_hash)
-      sorted_cookbooks = []
+
+      cookbooks = []
       books.each do |name, cb|
-        sorted_cookbooks |= DepSelector::Selector.new(graph).find_solution(
-          [DepSelector::SolutionConstraint.new(graph.package(name), Chef::VersionConstraint.new(cb.version))]
-        ).keys.reverse
+        cookbooks |= Solve.it!(graph, [[name, cb.version]])
       end
       Spiceweasel::Log.debug("dir_ext: sorted_cookbooks: '#{sorted_cookbooks.join(',')}'")
-      sorted_cookbooks.collect { |x| { x => nil } }
+      cookbooks.collect { |x| { x => nil } }
     end
   end
 end
