@@ -14,7 +14,6 @@ module Spiceweasel
       unless(berkshelf.nil?)
         # only load berkshelf if we are going to use it
         require 'berkshelf'
-
         berks_options = []
         case berkshelf
         when String
@@ -23,15 +22,13 @@ module Spiceweasel
           path = berkshelf['path']
           berks_options << berkshelf['options'] if berkshelf['options']
         end
-        berks_options << "-b #{path}"
         path ||= './Berksfile'
+        berks_options << "-b #{path}"
+        berks_options = berks_options.join(' ')
+        opts = Thor::Options.split(berks_options.split(' ')).last
+        resolve_opts = Thor::Options.new(Berkshelf::Cli.task['upload']).parse(opts)
         berks = Berkshelf::Berksfile.from_file(path)
-        if(berks_options.detect{|x|x.include?('--nested-berksfiles')})
-          resolve_opts = {:nested_berksfiles => true}
-        else
-          resolve_opts = {}
-        end
-        create_command("berks upload #{berks_options.join(' ')}")
+        create_command("berks upload #{berks_options}")
         Berkshelf.ui.mute do
           berks.resolve(resolve_opts).each do |cb|
             @cookbook_list[cb.cookbook_name] = cb.version
