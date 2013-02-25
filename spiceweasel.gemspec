@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_dependency('mixlib-log')
   s.add_dependency('mixlib-shellout')
   s.add_dependency('chef')
-  s.add_dependency('berkshelf')
-  s.add_dependency('dep_selector')
+  s.add_dependency('berkshelf', '~> 1.1.2')
+  s.add_dependency('solve', '~> 0.4.1') # some what redundant since provided via berkshelf
   s.add_development_dependency('rspec')
 end
