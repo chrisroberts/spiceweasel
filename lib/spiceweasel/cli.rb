@@ -132,7 +132,7 @@ module Spiceweasel
     :proc => lambda { |v| puts "Spiceweasel: #{::Spiceweasel::VERSION}" },
     :exit => 0
 
-    option :uid,
+    option :unique_id,
     :long => '--unique-id',
     :description => 'Unique ID generally used for ruby based configs'
 
