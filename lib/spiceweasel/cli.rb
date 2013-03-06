@@ -133,7 +133,7 @@ module Spiceweasel
     :exit => 0
 
     option :unique_id,
-    :long => '--unique-id',
+    :long => '--unique-id UID',
     :description => 'Unique ID generally used for ruby based configs'
 
     def run
