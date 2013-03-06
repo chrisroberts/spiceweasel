@@ -132,6 +132,10 @@ module Spiceweasel
     :proc => lambda { |v| puts "Spiceweasel: #{::Spiceweasel::VERSION}" },
     :exit => 0
 
+    option :uid,
+    :long => '--unique-id',
+    :description => 'Unique ID generally used for ruby based configs'
+
     def run
       if Spiceweasel::Config[:extractlocal] || Spiceweasel::Config[:extractjson] || Spiceweasel::Config[:extractyaml]
         manifest = Spiceweasel::ExtractLocal.parse_objects
