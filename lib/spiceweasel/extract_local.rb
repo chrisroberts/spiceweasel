@@ -18,7 +18,6 @@
 #
 
 require 'chef'
-require 'chef/cookbook_version_selector'
 
 module Spiceweasel
   class ExtractLocal
