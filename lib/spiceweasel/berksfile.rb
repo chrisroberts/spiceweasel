@@ -26,7 +26,7 @@ module Spiceweasel
         berks_options << "-b #{path}"
         berks_options = berks_options.join(' ')
         opts = Thor::Options.split(berks_options.split(' ')).last
-        resolve_opts = Thor::Options.new(Berkshelf::Cli.task['upload']).parse(opts)
+        resolve_opts = Thor::Options.new(Berkshelf::Cli.tasks['upload'].options).parse(opts)
         berks = Berkshelf::Berksfile.from_file(path)
         create_command("berks upload #{berks_options}")
         Berkshelf.ui.mute do
