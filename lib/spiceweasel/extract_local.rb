@@ -97,7 +97,7 @@ module Spiceweasel
       books.each do |name, cb|
         cookbooks |= Solve.it!(graph, [[name, cb.version]])
       end
-      Spiceweasel::Log.debug("dir_ext: sorted_cookbooks: '#{sorted_cookbooks.join(',')}'")
+      Spiceweasel::Log.debug("dir_ext: cookbooks: '#{cookbooks.join(',')}'")
       cookbooks.collect { |x| { x => nil } }
     end
   end
